@@ -43,13 +43,13 @@ class Label():
 
 
 
-def rcsp(g,source, terminal, resourceExtensionFunction, labelDominationFunction):
+def rcsp(g,source, terminal, resourceExtensionFunction, labelDominationFunction, sourceResourceDict = {'cost' : 0 , 'time' :0}):
     
     label_number = 1
     numberOfIterations = 0
     
     first_label = Label(resVert = source)
-    first_label.resourceDict = {'cost' : 0 , 'time' : 0}
+    first_label.resourceDict = sourceResourceDict
     current_label = None
     new_label = None
     
