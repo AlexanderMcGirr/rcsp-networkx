@@ -5,24 +5,6 @@
 if __name__ == '__main__':
     import rcsp_networkx
     import networkx
-    
-    def labelDom(firstLabel, secondLabel):
-        if firstLabel.resourceDict['cost'] <= secondLabel.resourceDict['cost']:
-            return secondLabel
-        elif secondLabel.resourceDict['cost'] <= firstLabel.resourceDict['cost']:
-            return firstLabel
-        else:
-            return None
-    
-    def REF(g,edge, label, labelNum):
-        newCost = label.resourceDict['cost'] + g[edge[0]][edge[1]]['cost']
-        newTime = label.resourceDict['time'] + g[edge[0]][edge[1]]['time']
-        
-        newResDict = { 'cost' : newCost, 'time' : newTime }
-        feasible = True
-        
-        return (feasible, rcsp_networkx.Label(edge[1], 
-                                         edge, label, newResDict, labelNum))
         
     g = networkx.DiGraph()
     
@@ -48,8 +30,7 @@ if __name__ == '__main__':
     g.add_edge("C", "D", cost=3, time=8)
     g.add_edge("D", "E", cost=1, time=3)
     g.add_edge("E", "A", cost=1, time=5)
-    g.add_edge("E", "B", cost=1, time=5)
+    g.add_edge("E", "B", cost=1, time=5)    
     
-    
-    solutions = rcsp_networkx.rcsp(g, "A", "E",REF, labelDom)
+    solutions = rcsp_networkx.rcsp(g, "A", "E")
     rcsp_networkx.printRCSP(solutions)

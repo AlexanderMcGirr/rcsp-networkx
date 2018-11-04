@@ -1,54 +1,16 @@
 import queue
+import rcsp_networkx.defaultclasses
+import rcsp_networkx.defaultfunctions
 
-class Label():
-    ''' 
-    According to Boost documentation labels in SPPRC stores:
-        
-        -Resident vertex
-        -Predecessor Arc over which it has been extended
-        -Predecessor label
-        -Current Vector of resource values    
-    '''
-    def __init__(self, resVert=None,predEdge=None,predLabel=None,resDict = {},labelID=0):
-        '''
-        TODO: Need a way for label to have the resourceVectors converted to resourceDictionaries
-        
-        '''
-        self.residentVertex = resVert
-        self.predEdge = predEdge
-        self.predLabel = predLabel
-        self.resourceDict = resDict
-        self.isDominated = False
-        self.isProcessed = False
-        self.isFeasible = True
-        self.id = labelID
-    
-    def __eq__(self,other):
-        return (self.id == other.id)
-    
-    def __ne__(self,other):
-        return (self.id != other.id)
-    
-    def __lt__(self,other):
-        return (self.id < other.id)
-    
-    def __le__(self,other):
-        return (self.id <= other.id)
-    
-    def __gt__(self,other):
-        return (self.id > other.id)
-    
-    def __ge__(self,other):
-        return (self.id >= other.id)
-
-
-
-def rcsp(g,source, terminal, resourceExtensionFunction, labelDominationFunction, sourceResourceDict = {'cost' : 0 , 'time' :0}):
+def rcsp(g,source, terminal, 
+         resourceExtensionFunction = rcsp_networkx.defaultfunctions.defaultREF, labelDominationFunction = rcsp_networkx.defaultfunctions.defaultLabelDominationFunction, 
+         sourceResourceDict = {'cost' : 0 , 'time' :0},
+         labelQueue = queue.PriorityQueue, labelDefinition = rcsp_networkx.defaultclasses.Label):
     
     label_number = 1
     numberOfIterations = 0
     
-    first_label = Label(resVert = source)
+    first_label = labelDefinition(resVert = source)
     first_label.resourceDict = sourceResourceDict
     current_label = None
     new_label = None
@@ -57,7 +19,7 @@ def rcsp(g,source, terminal, resourceExtensionFunction, labelDominationFunction,
     labelList = {}
     labelList[source] = []
     
-    unprocessed_labels = queue.PriorityQueue()
+    unprocessed_labels = labelQueue()
     unprocessed_labels.put(first_label)
     
     while not unprocessed_labels.empty():
@@ -102,8 +64,6 @@ def rcsp(g,source, terminal, resourceExtensionFunction, labelDominationFunction,
             labelList[current_label.residentVertex].remove(current_label)
         
         numberOfIterations +=1
-     
-    print("Number of Iterations: {}".format(numberOfIterations))
     
     # Returns a list of labels that are feasible    
     return labelList[terminal]
