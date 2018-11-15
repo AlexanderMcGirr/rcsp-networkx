@@ -5,6 +5,7 @@
 if __name__ == '__main__':
     import rcsp_networkx
     import networkx
+    import collections
     
     # Resource extension function
     # This should take the graph, edge, label and number as parameters.
@@ -17,17 +18,20 @@ if __name__ == '__main__':
         
             
         if newTime < g.node[edge[1]]['earliestTime']:
-            newTime = g.node[edge[1]]['earliestTime']    
+            newTime = g.node[edge[1]]['earliestTime']
         
         # Create new Dictionary for each label
         newResDict = {'cost':newCost,'time':newTime}    
         
         # Now return a tuple with bool if feasible and new label
+        # Create named tuple, first argument feasibility, second argument is the new label
+        FeasibilityNewLabel = collections.namedtuple('FeasibilityNewLabel', 'feasibility, newLabel')
         feasible = False
         if newTime <= g.node[edge[1]]['latestTime']:
             feasible = True
+        newLabel = FeasibilityNewLabel(feasibility=feasible, newLabel=rcsp_networkx.Label(edge[1],edge, label,newResDict, labelNum))
         
-        return (feasible, rcsp_networkx.Label(edge[1],edge, label,newResDict, labelNum))
+        return newLabel
     
     # Label domination function
     # This function takes two labels as parameters

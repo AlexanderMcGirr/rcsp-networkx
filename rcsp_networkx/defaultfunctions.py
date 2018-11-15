@@ -3,16 +3,22 @@
 # Assumptions: 1) cost is the attribute of the cost
 #              2) time is an attribute
 #              3) The default Label class is used
+import collections
 import rcsp_networkx.defaultclasses
  
 def defaultREF(g,edge, label, labelNum):
-        newCost = label.resourceDict['cost'] + g[edge[0]][edge[1]]['cost']
-        newTime = label.resourceDict['time'] + g[edge[0]][edge[1]]['time']
-          
+        #Unpacking the tuple is faster than indexing it
+        (edgeSource, edgeTerminal) = edge        
+        newCost = label.resourceDict['cost'] + g[edgeSource][edgeTerminal]['cost']
+        newTime = label.resourceDict['time'] + g[edgeSource][edgeTerminal]['time']
+        
         newResDict = { 'cost' : newCost, 'time' : newTime }
         feasible = True
-          
-        return (feasible, rcsp_networkx.defaultclasses.Label(edge[1], edge, label, newResDict, labelNum))
+        
+        FeasibilityNewLabel = collections.namedtuple('FeasibilityNewLabel', 'feasibility, newLabel')
+        newLabel = FeasibilityNewLabel(feasibility=feasible, newLabel=rcsp_networkx.defaultclasses.Label(edgeTerminal,edge, label,newResDict, labelNum))
+                
+        return newLabel
   
 def defaultLabelDominationFunction(firstLabel, secondLabel):
         if firstLabel.resourceDict['cost'] <= secondLabel.resourceDict['cost']:

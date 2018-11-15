@@ -1,6 +1,5 @@
 #===============================================================================
 # Default Classes
-# These default classes assume the problem is simply a shortest path problem
 class Label():
     ''' 
     According to Boost documentation labels in SPPRC stores:
@@ -44,5 +43,5 @@ class Label():
         return (self.id > other.id)
      
     def __ge__(self,other):
-        return (self.id >= other.id)
+        return (self.id >= other.id)    
 #===============================================================================

@@ -27,6 +27,7 @@ def rcsp(g,source, terminal,
         if(not current_label.isDominated):
             resident_vertex = current_label.residentVertex
             
+            # Make sure vertex has an associated label list
             if resident_vertex not in labelList:
                 labelList[resident_vertex] = []
             
@@ -41,7 +42,7 @@ def rcsp(g,source, terminal,
             
             # See https://stackoverflow.com/questions/1207406/how-to-remove-items-from-a-list-while-iterating
             # Cannot remove an item from list while iterating over it in the above for loop
-            labelList[resident_vertex][:] = [lbl for lbl in labelList[resident_vertex] 
+            labelList[resident_vertex][:] = [lbl for lbl in labelList[resident_vertex]
                                             if not (lbl.isDominated and lbl.isProcessed)]
         
         if(not current_label.isDominated):
@@ -49,23 +50,22 @@ def rcsp(g,source, terminal,
             # g.out_edges returns a tuple with (s,t)
             # forwardStar[0] = Source node
             # forwardStar[1] = Sink node
-            for forwardStar in g.out_edges([current_label.residentVertex]):
-                new_label = resourceExtensionFunction(g,forwardStar, current_label, label_number)
-                if new_label[0]:
-                    unprocessed_labels.put(new_label[1])
-                    if new_label[1].residentVertex not in labelList:
-                        labelList[new_label[1].residentVertex] = []
-                    labelList[forwardStar[1]].append(new_label[1])
+            for edge in g.out_edges([current_label.residentVertex]):
+                new_label = resourceExtensionFunction(g,edge, current_label, label_number)
+                edgeTerminal = edge[1]
+                if new_label.feasibility:
+                    unprocessed_labels.put(new_label.newLabel)
+                    if new_label.newLabel.residentVertex not in labelList:
+                        labelList[new_label.newLabel.residentVertex] = []
+                    labelList[edgeTerminal].append(new_label.newLabel)
                     label_number += 1
-            
         
         # Remove this label from its respective labelList because it is dominated
         else:
             labelList[current_label.residentVertex].remove(current_label)
-        
+          
         numberOfIterations +=1
-    
-    # Returns a list of labels that are feasible    
+    # Returns a list of labels that are feasible
     return labelList[terminal]
 
 def printRCSP(labelList):
