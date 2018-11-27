@@ -6,7 +6,7 @@ def rcsp(g,source, terminal,
          resourceExtensionFunction = rcsp_networkx.defaultfunctions.defaultREF, labelDominationFunction = rcsp_networkx.defaultfunctions.defaultLabelDominationFunction, 
          sourceResourceDict = {'cost' : 0 , 'time' :0},
          labelQueue = queue.PriorityQueue, labelDefinition = rcsp_networkx.defaultclasses.Label):
-    
+        
     label_number = 1
     numberOfIterations = 0
     
@@ -42,6 +42,7 @@ def rcsp(g,source, terminal,
             
             # See https://stackoverflow.com/questions/1207406/how-to-remove-items-from-a-list-while-iterating
             # Cannot remove an item from list while iterating over it in the above for loop
+            # Instead of creating another for loop we use list comprehensions
             labelList[resident_vertex][:] = [lbl for lbl in labelList[resident_vertex]
                                             if not (lbl.isDominated and lbl.isProcessed)]
         
@@ -83,7 +84,7 @@ def printRCSP(labelList):
     # For each solution print in reverse order
     for solution in paretoSolutions:
         accumulatedResourceVector = solution[0].resourceDict
-        print("Path:",end='')
+        print("Path: ",end='')
         for s in reversed(solution):
             print("{}".format(s.residentVertex), end='')
         print()
