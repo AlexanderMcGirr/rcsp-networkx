@@ -1,0 +1,2 @@
+# rcsp-networkx
+This implementation of a resource constrained shortest path algorithm that uses Networkx for the underlying graph, though there can then only be one resource extension function and label domination function for the whole graph. The benefit is this function is written simply, because there is no class written around it. Default classes are written for the case of a normal shortest path algorithm.
